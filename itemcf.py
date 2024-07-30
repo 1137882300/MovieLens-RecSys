@@ -102,8 +102,7 @@ class ItemBasedCF(object):
 
         for m1, related_movies in itemsim_mat.items():
             for m2, count in related_movies.items():
-                itemsim_mat[m1][m2] = count / math.sqrt(
-                    self.movie_popular[m1] * self.movie_popular[m2])
+                itemsim_mat[m1][m2] = count / math.sqrt(self.movie_popular[m1] * self.movie_popular[m2])
                 simfactor_count += 1
                 if simfactor_count % PRINT_STEP == 0:
                     print('calculating movie similarity factor(%d)' %
@@ -134,13 +133,13 @@ class ItemBasedCF(object):
         print('Evaluation start...', file=sys.stderr)
 
         N = self.n_rec_movie
-        #  varables for precision and recall
+        #  variables for precision and recall
         hit = 0
         rec_count = 0
         test_count = 0
-        # varables for coverage
+        # variables for coverage
         all_rec_movies = set()
-        # varables for popularity
+        # variables for popularity
         popular_sum = 0
 
         for i, user in enumerate(self.trainset):
