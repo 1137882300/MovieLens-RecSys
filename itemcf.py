@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
-'''
+# -*- coding: utf-8 -*-
+"""
 Created on 2015-06-22
 
-@author: Lockvictor
-'''
+@author: Lock victor
+"""
 import sys
 import random
 import math
@@ -16,7 +16,7 @@ random.seed(0)
 
 
 class ItemBasedCF(object):
-    ''' TopN recommendation - Item Based Collaborative Filtering '''
+    """ TopN recommendation - Item Based Collaborative Filtering """
 
     def __init__(self):
         self.trainset = {}
@@ -30,22 +30,21 @@ class ItemBasedCF(object):
         self.movie_count = 0
 
         print('Similar movie number = %d' % self.n_sim_movie, file=sys.stderr)
-        print('Recommended movie number = %d' %
-              self.n_rec_movie, file=sys.stderr)
+        print('Recommended movie number = %d' % self.n_rec_movie, file=sys.stderr)
 
     @staticmethod
     def loadfile(filename):
-        ''' load a file, return a generator. '''
+        """ load a file, return a generator. """
         fp = open(filename, 'r')
         for i, line in enumerate(fp):
             yield line.strip('\r\n')
             if i % 100000 == 0:
-                print ('loading %s(%s)' % (filename, i), file=sys.stderr)
+                print('loading %s(%s)' % (filename, i), file=sys.stderr)
         fp.close()
-        print ('load %s succ' % filename, file=sys.stderr)
+        print('load %s succ' % filename, file=sys.stderr)
 
     def generate_dataset(self, filename, pivot=0.7):
-        ''' load rating data and split it to training set and test set '''
+        """ load rating data and split it to training set and test set """
         trainset_len = 0
         testset_len = 0
 
@@ -61,12 +60,12 @@ class ItemBasedCF(object):
                 self.testset[user][movie] = int(rating)
                 testset_len += 1
 
-        print ('split training set and test set succ', file=sys.stderr)
-        print ('train set = %s' % trainset_len, file=sys.stderr)
-        print ('test set = %s' % testset_len, file=sys.stderr)
+        print('split training set and test set succ', file=sys.stderr)
+        print('train set = %s' % trainset_len, file=sys.stderr)
+        print('test set = %s' % testset_len, file=sys.stderr)
 
     def calc_movie_sim(self):
-        ''' calculate movie similarity matrix '''
+        """ calculate movie similarity matrix """
         print('counting movies number and popularity...', file=sys.stderr)
 
         for user, movies in self.trainset.items():
@@ -110,13 +109,11 @@ class ItemBasedCF(object):
                     print('calculating movie similarity factor(%d)' %
                           simfactor_count, file=sys.stderr)
 
-        print('calculate movie similarity matrix(similarity factor) succ',
-              file=sys.stderr)
-        print('Total similarity factor number = %d' %
-              simfactor_count, file=sys.stderr)
+        print('calculate movie similarity matrix(similarity factor) succ', file=sys.stderr)
+        print('Total similarity factor number = %d' % simfactor_count, file=sys.stderr)
 
     def recommend(self, user):
-        ''' Find K similar movies and recommend N movies. '''
+        """ Find K similar movies and recommend N movies. """
         K = self.n_sim_movie
         N = self.n_rec_movie
         rank = {}
@@ -133,7 +130,7 @@ class ItemBasedCF(object):
         return sorted(rank.items(), key=itemgetter(1), reverse=True)[:N]
 
     def evaluate(self):
-        ''' print evaluation result: precision, recall, coverage and popularity '''
+        """ print evaluation result: precision, recall, coverage and popularity """
         print('Evaluation start...', file=sys.stderr)
 
         N = self.n_rec_movie
@@ -148,7 +145,7 @@ class ItemBasedCF(object):
 
         for i, user in enumerate(self.trainset):
             if i % 500 == 0:
-                print ('recommended for %d users' % i, file=sys.stderr)
+                print('recommended for %d users' % i, file=sys.stderr)
             test_movies = self.testset.get(user, {})
             rec_movies = self.recommend(user)
             for movie, _ in rec_movies:
@@ -164,13 +161,13 @@ class ItemBasedCF(object):
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         popularity = popular_sum / (1.0 * rec_count)
 
-        print ('precision=%.4f\trecall=%.4f\tcoverage=%.4f\tpopularity=%.4f' %
-               (precision, recall, coverage, popularity), file=sys.stderr)
+        print('precision=%.4f\t recall=%.4f\t coverage=%.4f\t popularity=%.4f' %
+              (precision, recall, coverage, popularity), file=sys.stderr)
 
 
 if __name__ == '__main__':
-    ratingfile = os.path.join('ml-1m', 'ratings.dat')
+    rating_file = os.path.join('ml-1m', 'ratings.dat')
     itemcf = ItemBasedCF()
-    itemcf.generate_dataset(ratingfile)
+    itemcf.generate_dataset(rating_file)
     itemcf.calc_movie_sim()
     itemcf.evaluate()
