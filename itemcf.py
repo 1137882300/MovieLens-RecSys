@@ -18,6 +18,13 @@ random.seed(0)
 class ItemBasedCF(object):
     """ TopN recommendation - Item Based Collaborative Filtering """
 
+    """
+    self.trainset = {
+        'user1': {'movie1': 5, 'movie2': 3},
+        'user2': {'movie1': 4, 'movie3': 5}
+    }
+    """
+
     def __init__(self):
         self.trainset = {}
         self.testset = {}
@@ -85,12 +92,32 @@ class ItemBasedCF(object):
         itemsim_mat = self.movie_sim_mat
         print('building co-rated users matrix...', file=sys.stderr)
 
+        """ itemsim_mat 的结构
+        {
+            'm1': {
+                'm2': 1,  # 用户A同时观看了m1和m2
+                'm3': 2   # 用户B同时观看了m1和m3
+            },
+            'm2': {
+                'm1': 5,  # 用户A同时观看了m1和m2，与'm1': {'m2': 1} 对应
+                'm3': 1   # 用户C同时观看了m2和m3
+            },
+            'm3': {
+                'm1': 2,  # 用户B同时观看了m1和m3，与'm1': {'m3': 1} 对应
+                'm2': 1   # 用户C同时观看了m2和m3，与'm2': {'m3': 1} 对应
+            }
+        }
+        """
+        # 构建一个电影之间的相似度矩阵，其中相似度是通过共同观看这些电影的用户数量来衡量的
+        # 这个矩阵可以用于推荐系统中的基于物品的协同过滤算法，
+        # 该算法推荐用户可能喜欢的、与他们过去喜欢的电影相似的其他电影。
         for user, movies in self.trainset.items():
             for m1 in movies:
                 itemsim_mat.setdefault(m1, defaultdict(int))
                 for m2 in movies:
                     if m1 == m2:
                         continue
+                    # 如果多个用户观看了相同的两部电影，这些电影的相似度计数会增
                     itemsim_mat[m1][m2] += 1
 
         print('build co-rated users matrix succ', file=sys.stderr)
