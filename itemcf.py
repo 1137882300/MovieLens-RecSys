@@ -136,8 +136,7 @@ class ItemBasedCF(object):
                 itemsim_mat[m1][m2] = count / math.sqrt(self.movie_popular[m1] * self.movie_popular[m2])
                 simfactor_count += 1
                 if simfactor_count % PRINT_STEP == 0:
-                    print('calculating movie similarity factor(%d)' %
-                          simfactor_count, file=sys.stderr)
+                    print('calculating movie similarity factor(%d)' % simfactor_count, file=sys.stderr)
 
         print('calculate movie similarity matrix(similarity factor) succ', file=sys.stderr)
         print('Total similarity factor number = %d' % simfactor_count, file=sys.stderr)
@@ -203,7 +202,7 @@ class ItemBasedCF(object):
 
 
 if __name__ == '__main__':
-    rating_file = os.path.join('ml-1m', 'ratings00.dat')
+    rating_file = os.path.join('ml-1m', 'ratings.dat')
     itemcf = ItemBasedCF()
     itemcf.generate_dataset(rating_file)
     itemcf.calc_movie_sim()
