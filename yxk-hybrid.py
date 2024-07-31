@@ -7,7 +7,7 @@ from surprise import accuracy
 
 # 加载数据
 reader = Reader(line_format='user item rating', sep='::')
-rating_file = os.path.join('yxk', 'ratings_prod_3w.dat')
+rating_file = os.path.join('yxk', 'ratings_prod_3w_2.dat')
 data = Dataset.load_from_file(rating_file, reader=reader)
 trainset, testset = train_test_split(data, test_size=0.25)
 
@@ -88,7 +88,7 @@ def print_combined_predictions(combined_predictions):
         print(f"Item {raw_iid} with combined predicted rating {est}")
 
 
-user_id = '1087475'
+user_id = '12891483'
 print(f"Hybrid Recommendations for user {user_id}:")
 recommendations = hybrid_recommend(user_id)
 print_combined_predictions(dict(recommendations))
