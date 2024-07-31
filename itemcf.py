@@ -39,6 +39,7 @@ class ItemBasedCF(object):
         print('Similar movie number = %d' % self.n_sim_movie, file=sys.stderr)
         print('Recommended movie number = %d' % self.n_rec_movie, file=sys.stderr)
 
+    # 数据加载和划分-s
     @staticmethod
     def loadfile(filename):
         """ load a file, return a generator. """
@@ -71,6 +72,9 @@ class ItemBasedCF(object):
         print('train set = %s' % trainset_len, file=sys.stderr)
         print('test set = %s' % testset_len, file=sys.stderr)
 
+    # 数据加载和划分-e
+
+    # 计算物品相似度-s
     def calc_movie_sim(self):
         """ calculate movie similarity matrix """
         print('counting movies number and popularity...', file=sys.stderr)
@@ -138,6 +142,9 @@ class ItemBasedCF(object):
         print('calculate movie similarity matrix(similarity factor) succ', file=sys.stderr)
         print('Total similarity factor number = %d' % simfactor_count, file=sys.stderr)
 
+    # 计算物品相似度-s
+
+    # 推荐算法-s
     def recommend(self, user):
         """ Find K similar movies and recommend N movies. """
         K = self.n_sim_movie
@@ -155,6 +162,9 @@ class ItemBasedCF(object):
         # return the N best movies
         return sorted(rank.items(), key=itemgetter(1), reverse=True)[:N]
 
+    # 推荐算法-e
+
+    # 评估模型-s
     def evaluate(self):
         """ print evaluation result: precision, recall, coverage and popularity """
         print('Evaluation start...', file=sys.stderr)
@@ -189,10 +199,11 @@ class ItemBasedCF(object):
 
         print('precision=%.4f\t recall=%.4f\t coverage=%.4f\t popularity=%.4f' %
               (precision, recall, coverage, popularity), file=sys.stderr)
+    # 评估模型-e
 
 
 if __name__ == '__main__':
-    rating_file = os.path.join('ml-1m', 'ratings.dat')
+    rating_file = os.path.join('ml-1m', 'ratings00.dat')
     itemcf = ItemBasedCF()
     itemcf.generate_dataset(rating_file)
     itemcf.calc_movie_sim()

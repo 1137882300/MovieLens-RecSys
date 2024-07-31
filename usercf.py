@@ -233,8 +233,8 @@ class UserBasedCF(object):
 
 
 if __name__ == '__main__':
-    # ml-1m/ratings.dat
-    rating_file = os.path.join('ml-1m', 'ratings.dat')
+    # ml-1m/ratings00.dat
+    rating_file = os.path.join('ml-1m', 'ratings00.dat')
     usercf = UserBasedCF()
     usercf.generate_dataset(rating_file)
     usercf.calc_user_sim()
