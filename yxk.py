@@ -205,3 +205,15 @@ for rec in recommendations:
 # print("Items similar to 88888:")
 # for item in similar_items:
 #     print(f"Item {item}")
+
+
+# In[1]
+print("Hello, world!")
+
+# In[2]
+a = 10
+b = 20
+c = a + b
+print(c)
+# In[]
+print(1)

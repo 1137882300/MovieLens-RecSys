@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from surprise import Dataset, Reader, KNNBasic
+from surprise import Dataset, Reader, KNNBasic, SVD
 from surprise.model_selection import train_test_split
 from surprise import accuracy
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # 这些字段的顺序和名称告诉 Surprise 如何解析数据文件中的每一行。
     reader = Reader(line_format='user item rating timestamp', sep='::')
     # 从文件加载数据
-    rating_file = os.path.join('ml-1m', 'ratings00.dat')
+    rating_file = os.path.join('ml-1m', 'ratings.dat')
     data = Dataset.load_from_file(rating_file, reader=reader)
 
     # 划分训练集和测试集
@@ -52,13 +52,16 @@ if __name__ == '__main__':
     }
     # KNNWithMeans：这个算法在计算相似度时，会考虑评分的平均值。也就是说，它会减去用户或物品的平均评分，然后再计算相似度。这有助于减少评分的偏差，从而使得推荐更加准确。
     # KNNBasic：这是最基本的KNN算法，直接计算用户或物品之间的相似度，而不考虑评分的平均值。这种方法可能会受到评分偏差的影响。
-    algo = KNNBasic(sim_options=sim_options)
+    # algo = KNNBasic(sim_options=sim_options)
+
+    # 使用 SVD 算法
+    algo = SVD()
 
     # 训练模型
     algo.fit(trainset)
     # >>>>>>计算物品相似度-e
 
-    # 在测试集上进行预测
+    # 在测试集上进行预测，预测的结果也可以用于实际推荐。
     predictions = algo.test(testset)
 
     # >>>>>>评估模型-s
@@ -67,7 +70,7 @@ if __name__ == '__main__':
 
     # >>>>>>推荐算法-s
     # 获取推荐结果
-    top_n = get_top_n_recommendations(predictions, n=10)
+    top_n = get_top_n_recommendations(predictions, n=2)
 
     # 打印推荐结果
     for uid, user_ratings in top_n.items():
