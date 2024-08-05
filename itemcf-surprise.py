@@ -28,6 +28,21 @@ def get_top_n_recommendations(predictions, n=10):
     return top_n
 
 
+def get_user_recommendations(predictions, user_id, n=10):
+    """为指定用户推荐前N个电影"""
+    # 将预测结果整理成{uid: [(iid, est), ...]}的形式
+    top_n = defaultdict(list)
+    for uid, iid, true_r, est, _ in predictions:
+        if uid == user_id:
+            top_n[uid].append((iid, est))
+
+    # 对每个用户的预测评分进行排序，并返回前N个结果
+    for uid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+    return top_n
+
+
 if __name__ == '__main__':
     # 加载内置的MovieLens 100k数据集
     # data = Dataset.load_builtin('ml-100k')
@@ -62,15 +77,28 @@ if __name__ == '__main__':
     # >>>>>>计算物品相似度-e
 
     # 在测试集上进行预测，预测的结果也可以用于实际推荐。
+    # testset 通常是从数据集中分割出的测试集，包含用户-物品对和对应的实际评分。它用于比较模型的预测评分和真实评分，以计算误差（如 RMSE）。
     predictions = algo.test(testset)
 
     # >>>>>>评估模型-s
     # 评估模型的准确性
     accuracy.rmse(predictions)
 
+    # 在训练集上进行预测
+    # trainset.build_testset() 用于生成一个与训练集结构相同但评分未知的测试集。它主要用于生成模型预测的输入数据。
+    # 生成的测试集是一个包含所有用户-物品对的列表，其中每个对的评分字段为 None 或者一个占位符值。
+    # 这些数据对通常用来生成预测评分，而不是用来评估模型性能。
+    train_predictions = algo.test(trainset.build_testset())
+
+    # 指定用户ID
+    # 指定用户的推荐结果
+    specified_user_id = '5468'
+    top_n = get_user_recommendations(train_predictions, specified_user_id, n=10)
+
     # >>>>>>推荐算法-s
     # 获取推荐结果
-    top_n = get_top_n_recommendations(predictions, n=2)
+    # top_n = get_top_n_recommendations(predictions, n=2)
+    # top_n = get_top_n_recommendations(train_predictions, n=2)
 
     # 打印推荐结果
     for uid, user_ratings in top_n.items():
